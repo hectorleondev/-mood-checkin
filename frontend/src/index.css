@@ -34,3 +34,20 @@ table { width: 100%; border-collapse: collapse; background: #fff; border-radius:
 th, td { padding: .75rem 1rem; text-align: left; border-bottom: 1px solid #e4e7eb; }
 th { background: #f0f4f8; font-size: .85rem; text-transform: uppercase; letter-spacing: .03em; }
 td.score { font-weight: 700; }
+
+.form.wide, .card.wide { width: 420px; max-width: 100%; text-align: left; }
+textarea, select { padding: .6rem .75rem; border: 1px solid #cbd2d9; border-radius: 8px; font-size: 1rem; font-family: inherit; background: #fff; }
+textarea[aria-invalid='true'], select[aria-invalid='true'] { border-color: #d64545; }
+.actions { display: flex; gap: .5rem; align-items: center; }
+.actions button, .actions .button { margin-top: 0; }
+.form .actions { margin-top: 1rem; }
+.card .actions { margin-top: 1rem; }
+a.button { display: inline-block; padding: .6rem 1rem; border-radius: 8px; text-decoration: none; }
+a.button.secondary { background: #e4e7eb; color: #1f2933; }
+button.danger { background: #d64545; }
+button.small { padding: .3rem .6rem; font-size: .85rem; margin-top: 0; }
+.row-actions { display: flex; gap: .4rem; }
+.readonly-field { margin: 0 0 .5rem; color: #52606d; }
+.readonly-field span { font-weight: 600; margin-right: .5rem; color: #1f2933; }
+.warning { font-weight: 600; margin: 1rem 0 0; }
+table.key-value th[scope='row'] { width: 35%; background: #f8fafc; text-transform: none; letter-spacing: 0; font-size: .9rem; }

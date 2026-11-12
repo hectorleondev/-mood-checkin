@@ -3,28 +3,41 @@ import type { MoodCheckIn } from '../types'
 import { formatDate } from '../utils/formatDate'
 
 interface CheckinRowProps {
+  id: number
   score: number
   note: string
   date: string
   username: string
+  onEdit: (id: number) => void
+  onDelete: (id: number) => void
 }
 
-const CheckinRow = memo(function CheckinRow({ score, note, date, username }: CheckinRowProps) {
+const CheckinRow = memo(function CheckinRow({ id, score, note, date, username, onEdit, onDelete }: CheckinRowProps) {
   return (
     <tr>
       <td className="score">{score}</td>
       <td>{note || <span className="muted">—</span>}</td>
       <td>{date}</td>
       <td>{username}</td>
+      <td className="row-actions">
+        <button type="button" className="small" onClick={() => onEdit(id)} aria-label={`Edit check-in of ${date}`}>
+          Edit
+        </button>
+        <button type="button" className="small danger" onClick={() => onDelete(id)} aria-label={`Delete check-in of ${date}`}>
+          Delete
+        </button>
+      </td>
     </tr>
   )
 })
 
 interface CheckinsTableProps {
   checkins: MoodCheckIn[]
+  onEdit: (id: number) => void
+  onDelete: (id: number) => void
 }
 
-function CheckinsTable({ checkins }: CheckinsTableProps) {
+function CheckinsTable({ checkins, onEdit, onDelete }: CheckinsTableProps) {
   // Derive display rows once per data change, not on every render.
   const rows = useMemo(
     () =>
@@ -46,11 +59,12 @@ function CheckinsTable({ checkins }: CheckinsTableProps) {
           <th scope="col">Notes</th>
           <th scope="col">Date</th>
           <th scope="col">Username</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
-        {rows.map(({ id, ...row }) => (
-          <CheckinRow key={id} {...row} />
+        {rows.map((row) => (
+          <CheckinRow key={row.id} {...row} onEdit={onEdit} onDelete={onDelete} />
         ))}
       </tbody>
     </table>
