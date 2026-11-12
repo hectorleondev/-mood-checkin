@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "first_name", "last_name", "role"]
 
-    def get_role(self, obj):
+    def get_role(self, obj) -> str:
         return get_role(obj)
 
 

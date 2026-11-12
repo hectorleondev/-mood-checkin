@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, mixins, permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ class MoodCheckInViewSet(viewsets.ModelViewSet):
     serializer_class = MoodCheckInSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ["get", "post", "patch", "delete"]
+    queryset = MoodCheckIn.objects.none()  # for schema generation; real queryset in get_queryset()
 
     def get_queryset(self):
         queryset = MoodCheckIn.objects.select_related("user", "user__profile")
@@ -37,6 +39,7 @@ class MoodCheckInViewSet(viewsets.ModelViewSet):
         except IntegrityError:
             raise serializers.ValidationError({"date": [DUPLICATE_CHECKIN_MESSAGE]})
 
+    @extend_schema(summary="Check-ins of one user (admins: any user; users: only themselves)")
     @action(detail=False, methods=["get"], url_path=r"user/(?P<user_id>\d+)")
     def by_user(self, request, user_id=None):
         checkins = self.get_queryset().filter(user_id=user_id)
@@ -49,6 +52,7 @@ class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(responses=UserSerializer, summary="Current authenticated user")
     @action(detail=False, methods=["get"])
     def me(self, request):
         return Response(UserSerializer(request.user).data)
