@@ -117,3 +117,13 @@ apply change for MoodCheckIn
 created_at and user must be read_only_fields
 UniqueConstraint should return 400 bad reurst insted of 500
 ```
+
+## Prompt 9
+```
+changes applied for MoodCheckIn
+Create admin test user and normaluser using Feature level module
+Create unit to lo /api/auth/login/ validate 200 and bad request
+ Create unit unt for Get /api/mood-checkins using admin token. Validate get all records for all users
+ Create unit unt for Get /api/mood-checkins using nrmal token. Validate get only own test
+Create unit to validate POST  /api/mood-checkin
+```
