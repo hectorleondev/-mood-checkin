@@ -28,7 +28,7 @@ class MoodCheckInViewSet(viewsets.ModelViewSet):
         # the DB UniqueConstraint wins, and we turn it into a 400 instead of a 500.
         try:
             with transaction.atomic():
-                serializer.save(user=self.request.user)
+                serializer.save()  # owner resolved in the serializer (token user, or chosen by an admin)
         except IntegrityError:
             raise serializers.ValidationError({"date": [DUPLICATE_CHECKIN_MESSAGE]})
 
@@ -47,10 +47,25 @@ class MoodCheckInViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
+class IsAdminRole(permissions.BasePermission):
+    message = "Only admins can perform this action."
+
+    def has_permission(self, request, view):
+        return get_role(request.user) == UserProfile.Role.ADMIN
+
+
+class UserViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+    queryset = User.objects.select_related("profile").order_by("username")
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action == "list":
+            # Admin-only: used to pick the owner when creating a check-in.
+            return [permissions.IsAuthenticated(), IsAdminRole()]
+        return super().get_permissions()
+
+    def get_serializer_class(self):
+        return RegisterSerializer if self.action == "create" else UserSerializer
 
     @extend_schema(responses=UserSerializer, summary="Current authenticated user")
     @action(detail=False, methods=["get"])

@@ -129,3 +129,31 @@ class CreateCheckInTests(BaseAPITestCase):
             CHECKINS_URL, {"score": 5, "date": "2026-11-15"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class AdminFeaturesTests(BaseAPITestCase):
+    def test_admin_can_create_checkin_for_another_user(self):
+        self.authenticate("admin_user")
+        response = self.client.post(
+            CHECKINS_URL, {"score": 6, "date": "2026-11-12", "user_id": self.user.id}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["user"]["id"], self.user.id)
+
+    def test_normal_user_cannot_create_checkin_for_another_user(self):
+        self.authenticate("normal_user")
+        response = self.client.post(
+            CHECKINS_URL, {"score": 6, "date": "2026-11-12", "user_id": self.other_user.id}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("user_id", response.data)
+        self.assertFalse(MoodCheckIn.objects.filter(user=self.other_user, date=date(2026, 11, 12)).exists())
+
+    def test_users_list_is_admin_only(self):
+        self.authenticate("normal_user")
+        self.assertEqual(self.client.get("/api/users/").status_code, status.HTTP_403_FORBIDDEN)
+
+        self.authenticate("admin_user")
+        response = self.client.get("/api/users/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3)

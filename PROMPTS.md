@@ -127,3 +127,74 @@ Create unit to lo /api/auth/login/ validate 200 and bad request
  Create unit unt for Get /api/mood-checkins using nrmal token. Validate get only own test
 Create unit to validate POST  /api/mood-checkin
 ```
+
+## Prompt 10
+
+```
+General request
+
+Please use Hybrid feature-based architecture for folder schema of project
+install re TankStack query for cache all endpoint
+for react hook form and zod for validation
+include lazy while loading tables and memo
+Use useCallback for improve performance and useMemo
+Create customhooks for all logic of component and apis keep logic to consume endpoint
+Routing
+
+install react-router for handle router sections
+Create not found if page dones exsit or is private
+Keep teo kind of access pulbic and private seconds with auhenticate token and save in cookie https
+Login Sections
+
+Create login form tht shoud coume /api/auth/login/
+Page is public
+Form with username type textfield required, passeord type password and required
+button called login with submit event use zod and react hook form for validate and handle
+return error message "Invalidate credential" with red color below button
+if credentia l is correct redirect home /
+Home section
+Private section access with auhenticate token
+consume endpiint Get /api/mood-checkins
+create a table with follwing columns 
+
+score
+notes
+date
+username
+```
+
+## prompt 11
+```
+Routing
+Include thee new path /detail and detail/{id} lins same page Detail
+and /delete/{id} new component called delete
+Home Section
+include create button nesxto logout button
+and add nre colum in table called actions with tow botton delete and edit
+for edit redirect /detail/{id}
+for create same path buy with out /detail
+for deelte redirect to /delete
+
+Delete Page
+Cosnume Get /api/mood-checkins/{id} and show fields in table
+columns key and value 
+bellow a message a re you sure to delete that record?
+and delete button with submit action consume Delete /api/mood-checkin if respose 2XX rediurect home instead show error message bellow cancel button
+and cancel button next to delete redirect home
+
+Detail Page
+without id in query params (CREATE new)
+Create text textbox for note and select option  with all users if it is admin othercase hidden user and send current user to request endpoint
+score use number field text
+use react hook from and zood for validate
+include button create bellow and error message hidden per each field
+score and user if its admin user are required, notes are optional
+for date use textfireld but zood apply validation of date
+cosnume endpint Post /api/mood-checkin if status = 2XX redirect home other case show error in fields
+With query param id (EDIT)
+consume Get /api/mood-checkins/id
+and fiil fields score, notes, date are enable fields
+and show user as label noly descriptive
+ise react hook form and zod for validation
+bellow update button consume Patch /api/mood-checkin if status = 2XX redirect home other case show error in fields
+```
